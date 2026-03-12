@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Harf Canavarı 🎮</title>
+  <link rel="manifest" href="manifest.json" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="theme-color" content="#7C3AED" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <!-- Baloo 2: Türkçe karakterleri (ş ğ ı ö ü ç) mükemmel destekler, çocuk dostu yuvarlak font -->
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- EKRAN 1: ANA MENÜ -->
+  <div id="screen-menu" class="screen active">
+    <div class="menu-bg">
+      <div class="bubble b1"></div><div class="bubble b2"></div>
+      <div class="bubble b3"></div><div class="bubble b4"></div>
+      <div class="bubble b5"></div><div class="bubble b6"></div>
+    </div>
+
+    <div class="menu-layout">
+      <!-- Sol: Maskot -->
+      <div class="menu-left">
+        <div class="logo-icon">
+          <div class="monster-body">
+            <div class="monster-horn left-horn"></div>
+            <div class="monster-horn right-horn"></div>
+            <div class="monster-face">
+              <div class="eyes-row">
+                <div class="monster-eye"><div class="pupil"></div></div>
+                <div class="monster-eye"><div class="pupil"></div></div>
+              </div>
+              <div class="monster-nose"></div>
+              <div class="monster-mouth">
+                <span class="tooth">A</span>
+                <span class="tooth">B</span>
+                <span class="tooth">C</span>
+              </div>
+            </div>
+            <div class="monster-feet">
+              <div class="foot"></div><div class="foot"></div>
+            </div>
+          </div>
+        </div>
+        <h1 class="logo-title">Harf<br>Canavarı</h1>
+        <p class="logo-sub">✨ Harfleri öğren, eğlen! ✨</p>
+        <div class="star-bar">
+          <span>⭐</span>
+          <span id="menu-total-stars">0</span>
+          <span>yıldız</span>
+        </div>
+      </div>
+
+      <!-- Sağ: Mod butonları -->
+      <div class="menu-right">
+        <p class="menu-prompt">Bir mod seç:</p>
+        <div class="menu-buttons">
+          <button class="btn-play btn-purple" onclick="Game.startGame('find')">
+            <span class="btn-icon">🔍</span>
+            <div class="btn-text-group">
+              <span class="btn-main">Sesi Bul</span>
+              <span class="btn-sub">Harfle başlayan kelimeyi bul</span>
+            </div>
+          </button>
+          <button class="btn-play btn-green" onclick="Game.startGame('match')">
+            <span class="btn-icon">🎯</span>
+            <div class="btn-text-group">
+              <span class="btn-main">Harfi Eşleştir</span>
+              <span class="btn-sub">Harf ile kelimeyi eşleştir</span>
+            </div>
+          </button>
+          <button class="btn-play btn-orange" onclick="Game.startGame('listen')">
+            <span class="btn-icon">👂</span>
+            <div class="btn-text-group">
+              <span class="btn-main">Dinle &amp; Seç</span>
+              <span class="btn-sub">Sesi duyup doğruyu seç</span>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EKRAN 2: OYUN -->
+  <div id="screen-game" class="screen">
+    <!-- Üst başlık -->
+    <div class="game-header">
+      <button class="btn-back" onclick="Game.goMenu()">← Geri</button>
+      <span class="mode-badge" id="mode-label">🔍 Sesi Bul</span>
+      <div class="header-right">
+        <div class="score-box" id="score-stars">⭐ 0</div>
+        <div class="round-box" id="round-info">1 / 8</div>
+      </div>
+    </div>
+
+    <!-- Progress bar -->
+    <div class="progress-bar-container">
+      <div class="progress-bar-fill" id="progress-fill" style="width:0%"></div>
+    </div>
+
+    <!-- Oyun alanı: yatay iki panel -->
+    <div class="game-body">
+      <!-- Sol panel: Soru -->
+      <div class="question-panel">
+        <div class="question-letter" id="question-letter">A</div>
+        <div class="question-text" id="question-text"></div>
+        <button class="btn-listen" onclick="Game.speakQuestion()">🔊 Tekrar Dinle</button>
+      </div>
+
+      <!-- Sağ panel: Kartlar -->
+      <div class="cards-panel">
+        <div class="cards-grid" id="cards-grid"></div>
+      </div>
+    </div>
+
+    <div class="feedback-overlay hidden" id="feedback-overlay">
+      <div class="feedback-box" id="feedback-box">
+        <div class="feedback-emoji" id="feedback-emoji">🎉</div>
+        <div class="feedback-text" id="feedback-text">Harika!</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EKRAN 3: SONUÇ -->
+  <div id="screen-result" class="screen">
+    <div class="confetti-container" id="confetti-container"></div>
+    <div class="result-content">
+      <div class="result-trophy" id="result-trophy">🏆</div>
+      <h2 class="result-title" id="result-title">Tebrikler!</h2>
+      <div class="result-stars" id="result-stars"></div>
+      <div class="result-score" id="result-score">8 / 8 doğru</div>
+      <p class="result-msg" id="result-msg">Çok iyi yaptın!</p>
+      <div class="result-buttons">
+        <button class="btn-play btn-purple" onclick="Game.playAgain()">🔄 Tekrar Oyna</button>
+        <button class="btn-play btn-green" onclick="Game.goMenu()">🏠 Ana Menü</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="game.js"></script>
+</body>
+</html>
